@@ -2,14 +2,17 @@
 /**
  * Plugin Name: Post Slider
  * Plugin URI: https://yourwebsite.com/post-slider
- * Description: Simple post slider with 3 styles: Card 1, Card 2, and List. Use shortcode [post_slider style="card1"]
- * Version: 1.0.0
+ * Description: Post slider compatible with Elementor & page builders. 3 styles: Card 1, Card 2, List. Use [post_slider style="card1"]
+ * Version: 1.0.3
  * Author: Your Name
  * Author URI: https://yourwebsite.com
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: post-slider
  * Domain Path: /languages
+ * Requires at least: 5.0
+ * Tested up to: 6.4
+ * Requires PHP: 7.0
  */
 
 // Exit if accessed directly
@@ -18,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('POST_SLIDER_VERSION', '1.0.0');
+define('POST_SLIDER_VERSION', '1.0.3');
 define('POST_SLIDER_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('POST_SLIDER_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -37,8 +40,11 @@ class Post_Slider_Plugin {
         // Enqueue styles and scripts
         add_action('wp_enqueue_scripts', array($this, 'enqueue_assets'));
         
-        // Add inline styles
-        add_action('wp_footer', array($this, 'inline_styles'));
+        // Add inline styles (always load for better compatibility)
+        add_action('wp_footer', array($this, 'inline_styles'), 999);
+        
+        // Elementor compatibility
+        add_action('elementor/frontend/after_enqueue_styles', array($this, 'inline_styles'), 999);
     }
     
     /**
@@ -108,7 +114,7 @@ class Post_Slider_Plugin {
         
         <div class="ps-slider-container ps-card1" id="<?php echo esc_attr($unique_id); ?>">
             <?php if ($title) : ?>
-                <h2 class="ps-title"><?php echo esc_html($title); ?></h2>
+                <h2 class="ps-title" style="margin-bottom: 20px !important; font-size: 28px !important; font-weight: bold !important; color: #333 !important;"><?php echo esc_html($title); ?></h2>
             <?php endif; ?>
             
             <div class="ps-slider">
@@ -124,7 +130,9 @@ class Post_Slider_Plugin {
                         $date = get_the_date('j F Y', $post->ID);
                     ?>
                         <div class="ps-card">
-                            <div class="ps-card-image" style="background-image:url('<?php echo esc_url($thumbnail); ?>')"></div>
+                            <div class="ps-card-image">
+                                <img src="<?php echo esc_url($thumbnail); ?>" alt="<?php echo esc_attr($post->post_title); ?>" />
+                            </div>
                             <div class="ps-card-content">
                                 <div>
                                     <?php if ($categories) : ?>
@@ -170,11 +178,15 @@ class Post_Slider_Plugin {
         <script>
         (function() {
             var container = document.getElementById('<?php echo esc_js($unique_id); ?>');
+            if (!container) return;
+            
             var currentSlide = 0;
             var slides = container.querySelectorAll('.ps-card');
             var totalSlides = slides.length;
             var wrapper = container.querySelector('.ps-slider-wrapper');
             var dotsContainer = document.getElementById('dots_<?php echo esc_js($unique_id); ?>');
+            
+            if (!wrapper || !dotsContainer || totalSlides === 0) return;
             
             // Create dots
             for (var i = 0; i < totalSlides; i++) {
@@ -208,9 +220,20 @@ class Post_Slider_Plugin {
             };
             
             // Auto slide
-            setInterval(function() {
+            var autoSlideInterval = setInterval(function() {
                 window['psNext_<?php echo esc_js($unique_id); ?>']();
             }, 5000);
+            
+            // Pause on hover
+            container.addEventListener('mouseenter', function() {
+                clearInterval(autoSlideInterval);
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                autoSlideInterval = setInterval(function() {
+                    window['psNext_<?php echo esc_js($unique_id); ?>']();
+                }, 5000);
+            });
             
             updateSlider();
         })();
@@ -228,7 +251,7 @@ class Post_Slider_Plugin {
         
         <div class="ps-slider-container ps-card2" id="<?php echo esc_attr($unique_id); ?>">
             <?php if ($title) : ?>
-                <h2 class="ps-title"><?php echo esc_html($title); ?></h2>
+                <h2 class="ps-title" style="margin-bottom: 20px !important; font-size: 28px !important; font-weight: bold !important; color: #333 !important;"><?php echo esc_html($title); ?></h2>
             <?php endif; ?>
             
             <div class="ps-slider">
@@ -281,6 +304,8 @@ class Post_Slider_Plugin {
         <script>
         (function() {
             var container = document.getElementById('<?php echo esc_js($unique_id); ?>');
+            if (!container) return;
+            
             var currentIndex = 0;
             var cards = container.querySelectorAll('.ps-card');
             var totalCards = cards.length;
@@ -290,8 +315,9 @@ class Post_Slider_Plugin {
             var prevBtn = document.getElementById('prev_<?php echo esc_js($unique_id); ?>');
             var nextBtn = document.getElementById('next_<?php echo esc_js($unique_id); ?>');
             
+            if (!wrapper || !prevBtn || !nextBtn || totalCards === 0) return;
+            
             function updateSlider() {
-                if (cards.length === 0) return;
                 var cardWidth = cards[0].offsetWidth;
                 var gap = 30;
                 var offset = currentIndex * (cardWidth + gap);
@@ -314,7 +340,16 @@ class Post_Slider_Plugin {
                 }
             };
             
-            window.addEventListener('resize', updateSlider);
+            // Responsive recalculation
+            var resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    currentIndex = 0;
+                    updateSlider();
+                }, 250);
+            });
+            
             updateSlider();
         })();
         </script>
@@ -403,11 +438,15 @@ class Post_Slider_Plugin {
         <script>
         (function() {
             var container = document.getElementById('<?php echo esc_js($unique_id); ?>');
+            if (!container) return;
+            
             var currentSlide = 0;
             var slides = container.querySelectorAll('.ps-list-slide');
             var dots = container.querySelectorAll('.ps-list-dot');
             var items = container.querySelectorAll('.ps-list-item');
             var autoSlideInterval;
+            
+            if (slides.length === 0) return;
             
             function showSlide(index) {
                 slides.forEach(function(slide) { slide.classList.remove('active'); });
@@ -455,6 +494,15 @@ class Post_Slider_Plugin {
                 });
             });
             
+            // Pause on hover
+            container.addEventListener('mouseenter', function() {
+                clearInterval(autoSlideInterval);
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                startAutoSlide();
+            });
+            
             showSlide(0);
             startAutoSlide();
         })();
@@ -470,11 +518,19 @@ class Post_Slider_Plugin {
     }
     
     /**
-     * Inline Styles
+     * Inline Styles - Always load for compatibility
      */
     public function inline_styles() {
-        global $post;
-        if (is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'post_slider')) {
+        // Always load styles for better page builder compatibility
+        static $styles_loaded = false;
+        
+        if ($styles_loaded) {
+            return;
+        }
+        
+        $styles_loaded = true;
+        
+        if (file_exists(POST_SLIDER_PLUGIN_DIR . 'includes/styles.php')) {
             require_once POST_SLIDER_PLUGIN_DIR . 'includes/styles.php';
         }
     }
