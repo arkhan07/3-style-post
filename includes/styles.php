@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Styles - MATCHED WITH HTML FILES
- * CSS disesuaikan dengan design HTML yang di-upload
+ * Plugin Styles - ELEMENTOR COMPATIBLE
+ * CSS with higher specificity to override page builders
  */
 
 if (!defined('ABSPATH')) {
@@ -11,81 +11,171 @@ if (!defined('ABSPATH')) {
 
 <style>
 /* ============================================ */
-/* RESET & ISOLATION */
+/* ELEMENTOR & PAGE BUILDER COMPATIBILITY */
 /* ============================================ */
-.ps-slider-container,
-.ps-slider-container *,
+
+/* Override Elementor Container Styles - Highest Priority */
+.elementor-widget-shortcode .ps-slider-container,
+.elementor-element .ps-slider-container,
+.elementor-column .ps-slider-container,
+div[class*="elementor"] .ps-slider-container,
+.ps-slider-container {
+    all: initial !important;
+    display: block !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    font-family: Arial, sans-serif !important;
+    margin: 40px auto !important;
+    clear: both !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    line-height: 1.5 !important;
+    color: #333 !important;
+    background: transparent !important;
+}
+
+/* Force reset for all children */
+.elementor-widget-shortcode .ps-slider-container *,
+.elementor-element .ps-slider-container *,
+.elementor-column .ps-slider-container *,
+div[class*="elementor"] .ps-slider-container *,
+.ps-slider-container * {
+    box-sizing: border-box !important;
+    line-height: inherit !important;
+}
+
 .ps-slider-container *::before,
 .ps-slider-container *::after {
     box-sizing: border-box !important;
 }
 
-.ps-slider-container {
-    margin: 40px auto !important;
-    position: relative !important;
-    font-family: Arial, sans-serif !important;
-    clear: both !important;
-    width: 100% !important;
+/* Re-apply essential styles after reset */
+.ps-slider-container img {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    border: 0 !important;
 }
 
-/* Reset margins and paddings */
+.ps-slider-container a {
+    text-decoration: none !important;
+    background-color: transparent !important;
+    color: inherit !important;
+}
+
+.ps-slider-container button {
+    cursor: pointer !important;
+    font-family: inherit !important;
+    outline: none !important;
+}
+
+/* Override Elementor flex/grid */
+.elementor-widget-shortcode > .elementor-widget-container > .ps-slider-container,
+.elementor-element > .elementor-widget-container > .ps-slider-container,
+.elementor-column > .elementor-widget-wrap > .ps-slider-container {
+    display: block !important;
+}
+
+/* Reset margins/paddings with high specificity */
+.ps-slider-container div,
 .ps-slider-container h1,
 .ps-slider-container h2,
 .ps-slider-container h3,
+.ps-slider-container h4,
+.ps-slider-container h5,
+.ps-slider-container h6,
 .ps-slider-container p,
 .ps-slider-container ul,
+.ps-slider-container ol,
 .ps-slider-container li,
-.ps-slider-container div,
+.ps-slider-container span,
 .ps-slider-container button {
     margin: 0 !important;
     padding: 0 !important;
+    border: 0 !important;
+    font-size: 100% !important;
+    vertical-align: baseline !important;
+    background: transparent !important;
+}
+
+/* Reset lists */
+.ps-slider-container ul,
+.ps-slider-container ol {
+    list-style: none !important;
+}
+
+.ps-slider-container li {
+    list-style: none !important;
 }
 
 /* ============================================ */
-/* STYLE: CARD 1 (Based on card1.html) */
+/* STYLE: CARD 1 (Full Width Image + Content) */
 /* ============================================ */
 .ps-slider-container.ps-card1 {
-    max-width: 1000px !important;
+
     padding: 0 !important;
 }
 
 .ps-slider-container.ps-card1 .ps-slider {
     overflow: hidden !important;
     border-radius: 10px !important;
+    position: relative !important;
+    width: 100% !important;
 }
 
 .ps-slider-container.ps-card1 .ps-slider-wrapper {
     display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     transition: transform 0.5s ease !important;
+    width: 100% !important;
 }
 
-/* CARD STYLE - Match card1.html */
+/* CARD STYLE */
 .ps-slider-container.ps-card1 .ps-card {
     min-width: 100% !important;
+    width: 100% !important;
+    flex: 0 0 100% !important;
     background: white !important;
     border-radius: 10px !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
     display: flex !important;
     flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    align-items: stretch !important;
+    min-height: 400px !important;
+}
+
+/* Image 40% kiri - UPDATED: Using <img> tag instead of background-image */
+.ps-slider-container.ps-card1 .ps-card-image {
+    flex: 0 0 40% !important;
+    width: 40% !important;
+    min-width: 40% !important;
+    max-width: 40% !important;
+    height: 100% !important;
+    min-height: 400px !important;
+    position: relative !important;
     overflow: hidden !important;
 }
 
-/* Image 40% kiri - EXACT dari card1.html */
-.ps-slider-container.ps-card1 .ps-card-image {
-    flex: 0 0 40% !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
+.ps-slider-container.ps-card1 .ps-card-image img {
+    width: 100% !important;
     height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
 }
 
-/* Content kanan - EXACT dari card1.html */
+/* Content kanan */
 .ps-slider-container.ps-card1 .ps-card-content {
     flex: 1 !important;
+    width: 60% !important;
     padding: 40px !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
+    background: white !important;
 }
 
 .ps-slider-container.ps-card1 .ps-tag {
@@ -97,6 +187,7 @@ if (!defined('ABSPATH')) {
     color: #666 !important;
     margin-right: 8px !important;
     margin-bottom: 15px !important;
+    line-height: 1.5 !important;
 }
 
 .ps-slider-container.ps-card1 .ps-card-title {
@@ -111,6 +202,8 @@ if (!defined('ABSPATH')) {
 .ps-slider-container.ps-card1 .ps-card-title a {
     color: #333 !important;
     text-decoration: none !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
 }
 
 .ps-slider-container.ps-card1 .ps-card-title a:hover {
@@ -122,6 +215,7 @@ if (!defined('ABSPATH')) {
     font-size: 14px !important;
     margin-bottom: 20px !important;
     margin-top: 0 !important;
+    line-height: 1.5 !important;
 }
 
 .ps-slider-container.ps-card1 .ps-card-description {
@@ -134,6 +228,7 @@ if (!defined('ABSPATH')) {
 
 .ps-slider-container.ps-card1 .ps-card-author {
     display: flex !important;
+    flex-direction: row !important;
     align-items: center !important;
     gap: 10px !important;
     padding-top: 20px !important;
@@ -145,6 +240,7 @@ if (!defined('ABSPATH')) {
 .ps-slider-container.ps-card1 .ps-author-avatar {
     width: 50px !important;
     height: 50px !important;
+    min-width: 50px !important;
     border-radius: 50% !important;
     background: #ddd !important;
     display: flex !important;
@@ -153,27 +249,35 @@ if (!defined('ABSPATH')) {
     font-weight: bold !important;
     color: #666 !important;
     flex-shrink: 0 !important;
+    font-size: 18px !important;
 }
 
 .ps-slider-container.ps-card1 .ps-author-info {
     font-size: 14px !important;
+    flex: 1 !important;
 }
 
 .ps-slider-container.ps-card1 .ps-author-name {
     font-weight: bold !important;
     color: #333 !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
 }
 
 .ps-slider-container.ps-card1 .ps-author-date {
     color: #888 !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
 }
 
-/* Navigation Controls - Match card1.html */
+/* Navigation Controls */
 .ps-slider-container.ps-card1 .ps-slider-controls {
     display: flex !important;
+    flex-direction: row !important;
     justify-content: center !important;
     gap: 20px !important;
     margin-top: 30px !important;
+    align-items: center !important;
 }
 
 .ps-slider-container.ps-card1 .ps-slider-btn {
@@ -181,6 +285,8 @@ if (!defined('ABSPATH')) {
     border: 2px solid #ddd !important;
     width: 50px !important;
     height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
     border-radius: 50% !important;
     cursor: pointer !important;
     font-size: 20px !important;
@@ -189,6 +295,9 @@ if (!defined('ABSPATH')) {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
 }
 
 .ps-slider-container.ps-card1 .ps-slider-btn:hover {
@@ -197,23 +306,28 @@ if (!defined('ABSPATH')) {
     border-color: #333 !important;
 }
 
-/* Dots - Match card1.html */
+/* Dots */
 .ps-slider-container.ps-card1 .ps-slider-dots {
     display: flex !important;
+    flex-direction: row !important;
     justify-content: center !important;
     gap: 10px !important;
     margin-top: 20px !important;
+    align-items: center !important;
 }
 
 .ps-slider-container.ps-card1 .ps-dot {
     width: 10px !important;
     height: 10px !important;
+    min-width: 10px !important;
+    min-height: 10px !important;
     border-radius: 50% !important;
     background: #ddd !important;
     cursor: pointer !important;
     transition: all 0.3s !important;
     border: none !important;
     padding: 0 !important;
+    margin: 0 !important;
 }
 
 .ps-slider-container.ps-card1 .ps-dot.active {
@@ -222,7 +336,7 @@ if (!defined('ABSPATH')) {
     border-radius: 5px !important;
 }
 
-/* Responsive - Match card1.html */
+/* Responsive */
 @media (max-width: 768px) {
     .ps-slider-container.ps-card1 .ps-card {
         flex-direction: column !important;
@@ -231,17 +345,20 @@ if (!defined('ABSPATH')) {
         flex: none !important;
         width: 100% !important;
         height: 200px !important;
+        min-height: 200px !important;
     }
     .ps-slider-container.ps-card1 .ps-card-content {
         padding: 20px !important;
+        width: 100% !important;
     }
-    .ps-slider-container.ps-card1 .ps-card-title {
+    .ps-slider-container.ps-card1 .ps-card-title,
+    .ps-slider-container.ps-card1 .ps-card-title a {
         font-size: 20px !important;
     }
 }
 
 /* ============================================ */
-/* STYLE: CARD 2 (Based on card2.html) */
+/* STYLE: CARD 2 (3 Cards Horizontal) */
 /* ============================================ */
 .ps-slider-container.ps-card2 {
     max-width: 1200px !important;
@@ -251,22 +368,30 @@ if (!defined('ABSPATH')) {
 .ps-slider-container.ps-card2 .ps-slider {
     overflow: hidden !important;
     padding: 10px 0 !important;
+    position: relative !important;
+    width: 100% !important;
 }
 
 .ps-slider-container.ps-card2 .ps-slider-wrapper {
     display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     gap: 30px !important;
     transition: transform 0.5s ease !important;
+    width: auto !important;
 }
 
-/* CARD STYLE - Match card2.html EXACT */
+/* CARD STYLE */
 .ps-slider-container.ps-card2 .ps-card {
     min-width: calc(33.333% - 20px) !important;
+    width: calc(33.333% - 20px) !important;
+    flex: 0 0 calc(33.333% - 20px) !important;
     background: white !important;
     border-radius: 10px !important;
     padding: 25px !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
     transition: transform 0.3s, box-shadow 0.3s !important;
+    display: block !important;
 }
 
 .ps-slider-container.ps-card2 .ps-card:hover {
@@ -283,6 +408,7 @@ if (!defined('ABSPATH')) {
     color: #666 !important;
     margin-right: 5px !important;
     margin-bottom: 10px !important;
+    line-height: 1.5 !important;
 }
 
 .ps-slider-container.ps-card2 .ps-card-title {
@@ -291,11 +417,14 @@ if (!defined('ABSPATH')) {
     color: #333 !important;
     margin-bottom: 10px !important;
     margin-top: 0 !important;
+    line-height: 1.3 !important;
 }
 
 .ps-slider-container.ps-card2 .ps-card-title a {
     color: #333 !important;
     text-decoration: none !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
 }
 
 .ps-slider-container.ps-card2 .ps-card-title a:hover {
@@ -307,6 +436,7 @@ if (!defined('ABSPATH')) {
     font-size: 13px !important;
     margin-bottom: 15px !important;
     margin-top: 0 !important;
+    line-height: 1.5 !important;
 }
 
 .ps-slider-container.ps-card2 .ps-card-description {
@@ -319,6 +449,7 @@ if (!defined('ABSPATH')) {
 
 .ps-slider-container.ps-card2 .ps-card-author {
     display: flex !important;
+    flex-direction: row !important;
     align-items: center !important;
     gap: 10px !important;
     padding-top: 15px !important;
@@ -329,6 +460,7 @@ if (!defined('ABSPATH')) {
 .ps-slider-container.ps-card2 .ps-author-avatar {
     width: 40px !important;
     height: 40px !important;
+    min-width: 40px !important;
     border-radius: 50% !important;
     background: #ddd !important;
     display: flex !important;
@@ -342,24 +474,30 @@ if (!defined('ABSPATH')) {
 
 .ps-slider-container.ps-card2 .ps-author-info {
     font-size: 13px !important;
+    flex: 1 !important;
 }
 
 .ps-slider-container.ps-card2 .ps-author-name {
     font-weight: bold !important;
     color: #333 !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
 }
 
 .ps-slider-container.ps-card2 .ps-author-date {
     color: #888 !important;
     font-size: 12px !important;
+    line-height: 1.4 !important;
 }
 
-/* Navigation - Match card2.html */
+/* Navigation */
 .ps-slider-container.ps-card2 .ps-slider-controls {
     display: flex !important;
+    flex-direction: row !important;
     justify-content: center !important;
     gap: 20px !important;
     margin-top: 30px !important;
+    align-items: center !important;
 }
 
 .ps-slider-container.ps-card2 .ps-slider-btn {
@@ -367,6 +505,8 @@ if (!defined('ABSPATH')) {
     border: 2px solid #ddd !important;
     width: 50px !important;
     height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
     border-radius: 50% !important;
     cursor: pointer !important;
     font-size: 20px !important;
@@ -375,6 +515,9 @@ if (!defined('ABSPATH')) {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
 }
 
 .ps-slider-container.ps-card2 .ps-slider-btn:hover {
@@ -393,21 +536,25 @@ if (!defined('ABSPATH')) {
     color: #333 !important;
 }
 
-/* Responsive - Match card2.html */
+/* Responsive */
 @media (max-width: 968px) {
     .ps-slider-container.ps-card2 .ps-card {
         min-width: calc(50% - 15px) !important;
+        width: calc(50% - 15px) !important;
+        flex: 0 0 calc(50% - 15px) !important;
     }
 }
 
 @media (max-width: 640px) {
     .ps-slider-container.ps-card2 .ps-card {
         min-width: 100% !important;
+        width: 100% !important;
+        flex: 0 0 100% !important;
     }
 }
 
 /* ============================================ */
-/* STYLE: LIST (Based on list.html / berita) */
+/* STYLE: LIST (Sidebar + Big Image) */
 /* ============================================ */
 .ps-slider-container.ps-list {
     background-color: #000 !important;
@@ -422,23 +569,29 @@ if (!defined('ABSPATH')) {
 
 .ps-slider-container.ps-list .ps-list-container {
     display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
     min-height: 600px !important;
     max-width: 100% !important;
     margin: 0 !important;
     background-color: #000 !important;
+    align-items: stretch !important;
 }
 
-/* Left Sidebar - Match list.html EXACT 35% */
+/* Left Sidebar - 35% */
 .ps-slider-container.ps-list .ps-list-sidebar {
     flex: 0 0 35% !important;
+    width: 35% !important;
+    min-width: 35% !important;
+    max-width: 35% !important;
     background-color: #000 !important;
-    padding: 60px 40px !important;
+
     display: flex !important;
     flex-direction: column !important;
 }
 
 .ps-slider-container.ps-list .ps-list-sidebar h1 {
-    font-size: 3.5rem !important;
+    font-size: 48px !important;
     font-weight: 700 !important;
     margin-bottom: 40px !important;
     margin-top: 0 !important;
@@ -511,9 +664,10 @@ if (!defined('ABSPATH')) {
     font-weight: 600 !important;
 }
 
-/* Right Slider - Match list.html */
+/* Right Slider */
 .ps-slider-container.ps-list .ps-list-slider {
     flex: 1 !important;
+    width: 65% !important;
     position: relative !important;
     overflow: hidden !important;
 }
@@ -618,7 +772,7 @@ if (!defined('ABSPATH')) {
     box-shadow: 0 5px 15px rgba(0, 217, 255, 0.4) !important;
 }
 
-/* Navigation Arrows - Match list.html with dots pattern */
+/* Navigation Arrows */
 .ps-slider-container.ps-list .ps-list-nav {
     position: absolute !important;
     top: 50% !important;
@@ -629,6 +783,8 @@ if (!defined('ABSPATH')) {
     color: #fff !important;
     width: 50px !important;
     height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
     cursor: pointer !important;
     transition: all 0.3s ease !important;
     display: flex !important;
@@ -662,20 +818,24 @@ if (!defined('ABSPATH')) {
     color: #000 !important;
 }
 
-/* Pagination Dots - Match list.html */
+/* Pagination Dots */
 .ps-slider-container.ps-list .ps-list-pagination {
     position: absolute !important;
     bottom: 30px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     display: flex !important;
+    flex-direction: row !important;
     gap: 12px !important;
     z-index: 10 !important;
+    align-items: center !important;
 }
 
 .ps-slider-container.ps-list .ps-list-dot {
     width: 12px !important;
     height: 12px !important;
+    min-width: 12px !important;
+    min-height: 12px !important;
     border-radius: 50% !important;
     background: rgba(255, 255, 255, 0.4) !important;
     border: none !important;
@@ -696,7 +856,7 @@ if (!defined('ABSPATH')) {
     border-radius: 6px !important;
 }
 
-/* Responsive - Match list.html */
+/* Responsive */
 @media (max-width: 968px) {
     .ps-slider-container.ps-list .ps-list-container {
         flex-direction: column !important;
@@ -704,6 +864,7 @@ if (!defined('ABSPATH')) {
     }
     .ps-slider-container.ps-list .ps-list-sidebar {
         flex: none !important;
+        width: 100% !important;
         padding: 40px 20px !important;
     }
     .ps-slider-container.ps-list .ps-list-sidebar h1 {
@@ -711,6 +872,7 @@ if (!defined('ABSPATH')) {
         margin-bottom: 20px !important;
     }
     .ps-slider-container.ps-list .ps-list-slider {
+        width: 100% !important;
         min-height: 400px !important;
     }
 }
